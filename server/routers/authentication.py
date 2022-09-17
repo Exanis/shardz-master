@@ -26,7 +26,13 @@ class TokenResponse(BaseModel):
 
 @router.post("/")
 async def login(request: Request) -> TokenResponse:
-    """Returns a token to be used for authentication"""
+    """
+    Returns a token to be used for authentication
+
+    :param request: FastAPI's request object (automatically injected)
+    :return: A token to be used for authentication.
+    :raises HTTPException: 400 player alread logged, 401 invalid credentials
+    """
     params = await request.json()
     async with AsyncClient(base_url=settings.identification_url) as client:
         response = await client.post("/login/", json=params)
@@ -41,7 +47,14 @@ async def login(request: Request) -> TokenResponse:
 
 @router.post("/logout/")
 async def logout(data: TokenResponse, _: str = Depends(require_api)):
-    """Logs out a user"""
+    """
+    Logs out a user
+
+    :param data: The token of the user to log out.
+    :param _: The API key (automatically injected).
+    :return: A message confirming the logout.
+    :raises HTTPException: 404 If the token is invalid.
+    """
     if disconnect_player(data.token):
         return {"detail": "Player disconnected"}
     raise HTTPException(status_code=404, detail="Player not found")
