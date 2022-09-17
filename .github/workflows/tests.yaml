@@ -38,7 +38,11 @@ jobs:
       - run: poetry install --no-interaction --no-root
         if: steps.cache-deps.outputs.cache-hit != 'true'
       - run: poetry install --no-interaction
-      - run: poetry run pytest
+      - run: poetry run pytest --cov-report xml
       - run: poetry run pylint server
       - run: poetry run mypy server
       - run: poetry run bandit -r server
+      - uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          files: ./coverage.xml
