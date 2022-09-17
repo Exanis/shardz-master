@@ -85,7 +85,7 @@ async def test_register_server(app, httpx: HTTPXMock):
             json={
                 "url": "http://world1.test/",
             },
-            headers={"Authorization": f"Bearer invalid_key"},
+            headers={"Authorization": "Bearer invalid_key"},
         )
     assert response.status_code == 200
     assert has_been_called
