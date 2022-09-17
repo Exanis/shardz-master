@@ -31,7 +31,7 @@ async def login(request: Request) -> TokenResponse:
 
     :param request: FastAPI's request object (automatically injected)
     :return: A token to be used for authentication.
-    :raises HTTPException: 400 If the player is already logged, 401 if the credentials are invalid.
+    :raises HTTPException: 400 player alread logged, 401 invalid credentials
     """
     params = await request.json()
     async with AsyncClient(base_url=settings.identification_url) as client:
@@ -51,7 +51,7 @@ async def logout(data: TokenResponse, _: str = Depends(require_api)):
     Logs out a user
 
     :param data: The token of the user to log out.
-    :param _: The API key (automatically injected). This is not used but serve to validate the user name
+    :param _: The API key (automatically injected).
     :return: A message confirming the logout.
     :raises HTTPException: 404 If the token is invalid.
     """

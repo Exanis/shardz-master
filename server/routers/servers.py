@@ -29,7 +29,7 @@ async def list_servers(_: str = Depends(require_user)) -> List[Server]:
     """
     Returns the list of servers.
 
-    :param _: The user name (automatically injected). This is not used but serve to validate the connection.
+    :param _: The user name (automatically injected).
     :return: The list of servers.
     """
     async with AsyncClient(base_url=settings.servers_url) as client:
@@ -51,7 +51,7 @@ async def register_server(data: ServerRegisterData, _: str = Depends(require_api
     Registers a new server.
 
     :param data: The url of the server to register
-    :param _: The API key (automatically injected). This is not used but serve to validate the user name.
+    :param _: The API key (automatically injected).
     :return: A message confirming the registration.
     """
     async with AsyncClient(base_url=settings.servers_url) as client:
