@@ -48,8 +48,13 @@ jobs:
           TYPE: feat:Feature,fix:Fix,docs:Documentation,perf:Performance,build:Build,other:Other
           SUPPRESS_UNSCOPED: true
       - name: Build and push Docker image
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: pmorelli92/github-container-registry-build-push@2.0.0
         with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          github-push-secret: ${{secrets.GITHUB_TOKEN}}
+          docker-image-name: shardz/master
+          extract-git-tag: true
+      - name: Build and push Docker image as latest
+        uses: pmorelli92/github-container-registry-build-push@2.0.0
+        with:
+          github-push-secret: ${{secrets.GITHUB_TOKEN}}
+          docker-image-name: shardz/master
