@@ -41,12 +41,13 @@ jobs:
           message: "docs(version): update version to ${{ steps.meta.outputs.version }}"
           add: "pyproject.toml server/__init__.py"
           push: true
+          new_branch: Release.actions
       - name: Generate changelog
         uses: BobAnkh/auto-generate-changelog@v1.2.2
         with:
           ACCESS_TOKEN: ${{secrets.GITHUB_TOKEN}}
           BRANCH: main
-          PULL_REQUEST: Documentation.changelog
+          PULL_REQUEST: Release.actions
           TYPE: feat:Feature,fix:Fix,docs:Documentation,perf:Performance,build:Build,other:Other
           SUPPRESS_UNSCOPED: true
       - name: Build and push
