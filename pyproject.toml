@@ -2,7 +2,7 @@
 name = "Shardz Master"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["Yann Piquet <yann@piquet.tech>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
