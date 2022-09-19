@@ -13,19 +13,18 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       packages: write
-      pull-requests: write
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PUBLISH_TOKEN }}
       - uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.CONTAINER_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
@@ -47,7 +46,7 @@ jobs:
       - name: Generate changelog
         uses: BobAnkh/auto-generate-changelog@v1.2.2
         with:
-          ACCESS_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          ACCESS_TOKEN: ${{secrets.PUBLISH_TOKEN}}
           BRANCH: main
           PULL_REQUEST: Release.actions
           TYPE: feat:Feature,fix:Fix,docs:Documentation,perf:Performance,build:Build,other:Other
