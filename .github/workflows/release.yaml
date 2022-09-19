@@ -1,0 +1,55 @@
+name: "Build docker container for release"
+
+on:
+  push:
+    tags:
+      - v*
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            name/app
+          tags: type=semver,pattern={{version}}
+      - name: Change version
+        run: |
+          sed -i 's/version = ".*"/version = "${{ steps.meta.outputs.tags }}"/g' pyproject.toml
+          sed -i 's/__version__ = ".*"/__version__ = "${{ steps.meta.outputs.tags }}"/g' src/server/__init__.py
+      - name: Commit version
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "docs(version): update version to ${{ steps.meta.outputs.tags }}"
+          add: "pyproject.toml src/server/__init__.py"
+      - name: Generate changelog
+        uses: BobAnkh/auto-generate-changelog@v1.2.2
+        with:
+          ACCESS_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          BRANCH: main
+          TYPE: feat:Feature,fix:Fix,docs:Documentation,perf:Performance,build:Build,other:Other
+          SUPPRESS_UNSCOPED: true
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
