@@ -39,13 +39,14 @@ jobs:
         uses: EndBug/add-and-commit@v9
         with:
           message: "docs(version): update version to ${{ steps.meta.outputs.version }}"
-          add: "pyproject.toml src/server/__init__.py"
+          add: "pyproject.toml server/__init__.py"
           push: true
       - name: Generate changelog
         uses: BobAnkh/auto-generate-changelog@v1.2.2
         with:
           ACCESS_TOKEN: ${{secrets.GITHUB_TOKEN}}
           BRANCH: main
+          PULL_REQUEST: Documentation.changelog
           TYPE: feat:Feature,fix:Fix,docs:Documentation,perf:Performance,build:Build,other:Other
           SUPPRESS_UNSCOPED: true
       - name: Build and push
