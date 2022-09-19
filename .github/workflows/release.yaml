@@ -34,8 +34,8 @@ jobs:
             type=semver,pattern={{version}}
       - name: Change version
         run: |
-          sed -i 's/version = ".*"/version = "${{ steps.meta.outputs.version }}"/g' pyproject.toml
-          sed -i 's/__version__ = ".*"/__version__ = "${{ steps.meta.outputs.version }}"/g' server/__init__.py
+          sed -i 's/^version = ".*"$/version = "${{ steps.meta.outputs.version }}"/g' pyproject.toml
+          sed -i 's/^__version__ = ".*"$/__version__ = "${{ steps.meta.outputs.version }}"/g' server/__init__.py
       - name: Commit version
         uses: EndBug/add-and-commit@v9
         with:
