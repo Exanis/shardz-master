@@ -8,6 +8,6 @@ Master server component for Shardz.
 
 ## Important notice
 
-This project is a part of a master project called Shardz. Shardz is a project that aims to create a multiplayer game engine that is easy to use and extend. If you are
+This project is a part of a master project called Shardz. Shardz is a project that aims to create a multiplayer tool that manage a cluster of Unity servers to allow massive worlds. If you are
 not interested in developping Shardz itself, you probably should have a look at the
 [main project](https://github.com/Exanis/shardz)
