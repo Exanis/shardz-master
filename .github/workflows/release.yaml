@@ -13,7 +13,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: read|write
       packages: write
     steps:
       - uses: actions/checkout@v3
@@ -40,6 +40,7 @@ jobs:
         with:
           message: "docs(version): update version to ${{ steps.meta.outputs.version }}"
           add: "pyproject.toml src/server/__init__.py"
+          push: true
       - name: Generate changelog
         uses: BobAnkh/auto-generate-changelog@v1.2.2
         with:
