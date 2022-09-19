@@ -29,16 +29,17 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            name/app
-          tags: type=semver,pattern={{version}}
+            ghcr.io/${{ github.repository }}
+          tags: |
+            type=semver,pattern={{version}}
       - name: Change version
         run: |
-          sed -i 's/version = ".*"/version = "${{ steps.meta.outputs.tags }}"/g' pyproject.toml
-          sed -i 's/__version__ = ".*"/__version__ = "${{ steps.meta.outputs.tags }}"/g' src/server/__init__.py
+          sed -i 's/version = ".*"/version = "${{ steps.meta.outputs.version }}"/g' pyproject.toml
+          sed -i 's/__version__ = ".*"/__version__ = "${{ steps.meta.outputs.version }}"/g' src/server/__init__.py
       - name: Commit version
         uses: EndBug/add-and-commit@v9
         with:
-          message: "docs(version): update version to ${{ steps.meta.outputs.tags }}"
+          message: "docs(version): update version to ${{ steps.meta.outputs.version }}"
           add: "pyproject.toml src/server/__init__.py"
       - name: Generate changelog
         uses: BobAnkh/auto-generate-changelog@v1.2.2
@@ -47,14 +48,10 @@ jobs:
           BRANCH: main
           TYPE: feat:Feature,fix:Fix,docs:Documentation,perf:Performance,build:Build,other:Other
           SUPPRESS_UNSCOPED: true
-      - name: Build and push Docker image
-        uses: pmorelli92/github-container-registry-build-push@2.0.0
+      - name: Build and push
+        uses: docker/build-push-action@v3
         with:
-          github-push-secret: ${{secrets.GITHUB_TOKEN}}
-          docker-image-name: shardz/master
-          extract-git-tag: true
-      - name: Build and push Docker image as latest
-        uses: pmorelli92/github-container-registry-build-push@2.0.0
-        with:
-          github-push-secret: ${{secrets.GITHUB_TOKEN}}
-          docker-image-name: shardz/master
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
