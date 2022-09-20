@@ -40,7 +40,7 @@ jobs:
         name: Setup python for changelog
         with:
           python-version: 3.9
-      - run: pip install auto-changelog
+      - run: pip install git+https://github.com/kapsner/auto-changelog.git
       - run: auto-changelog -t "Shardz - Master server"
       - name: Commit everything
         uses: peter-evans/create-pull-request@v4.1.1
