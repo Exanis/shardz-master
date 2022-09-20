@@ -47,7 +47,10 @@ jobs:
         uses: peter-evans/create-pull-request@v4.1.1
         with:
           commit-message: "docs(version): update version to ${{ steps.meta.outputs.version }}"
-          add-paths: "pyproject.toml server/__init__.py CHANGELOG.md"
+          add-paths: |
+            pyproject.toml
+            server/__init__.py
+            CHANGELOG.md
           branch: RELEASE-${{ steps.meta.outputs.version }}
           title: "docs(version): update version to ${{ steps.meta.outputs.version }}"
           token: ${{ secrets.PUBLISH_TOKEN }}
