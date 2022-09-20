@@ -43,15 +43,22 @@ jobs:
       - run: pip install git+https://github.com/kapsner/auto-changelog.git
       - run: auto-changelog -t "Shardz - Master server"
       - name: Commit everything
+        id: cpr
         uses: peter-evans/create-pull-request@v4.1.1
         with:
           commit-message: "docs(version): update version to ${{ steps.meta.outputs.version }}"
-          add-path: "pyproject.toml server/__init__.py CHANGELOG.md"
-          push: true
+          add-paths: "pyproject.toml server/__init__.py CHANGELOG.md"
           branch: RELEASE-${{ steps.meta.outputs.version }}
           title: "docs(version): update version to ${{ steps.meta.outputs.version }}"
           token: ${{ secrets.PUBLISH_TOKEN }}
           labels: Release
+          base: main
+      - name: Enable Pull Request Automerge
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        uses: peter-evans/enable-pull-request-automerge@v2
+        with:
+          token: ${{ secrets.PUBLISH_TOKEN }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
