@@ -36,21 +36,23 @@ jobs:
         run: |
           sed -i 's/^version = ".*"$/version = "${{ steps.meta.outputs.version }}"/g' pyproject.toml
           sed -i 's/^__version__ = ".*"$/__version__ = "${{ steps.meta.outputs.version }}"/g' server/__init__.py
-      - name: Commit version
-        uses: EndBug/add-and-commit@v9
+      - uses: actions/setup-python@v4
+        name: Setup python for changelog
         with:
-          message: "docs(version): update version to ${{ steps.meta.outputs.version }}"
-          add: "pyproject.toml server/__init__.py"
+          python-version: 3.9
+          cache: 'pip'
+      - run: pip install auto-changelog
+      - run: auto-changelog -t "Shardz - Master server"
+      - name: Commit everything
+        uses: peter-evans/create-pull-request@v4.1.1
+        with:
+          commit-message: "docs(version): update version to ${{ steps.meta.outputs.version }}"
+          add-path: "pyproject.toml server/__init__.py CHANGELOG.md"
           push: true
-          new_branch: Release.actions
-      - name: Generate changelog
-        uses: BobAnkh/auto-generate-changelog@v1.2.2
-        with:
-          ACCESS_TOKEN: ${{secrets.PUBLISH_TOKEN}}
-          BRANCH: main
-          PULL_REQUEST: Release.actions
-          TYPE: feat:Feature,fix:Fix,docs:Documentation,perf:Performance,build:Build,other:Other
-          SUPPRESS_UNSCOPED: true
+          branch: RELEASE-${{ steps.meta.outputs.version }}
+          title: "docs(version): update version to ${{ steps.meta.outputs.version }}"
+          token: ${{ secrets.PUBLISH_TOKEN }}
+          labels: Release
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
