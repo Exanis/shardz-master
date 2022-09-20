@@ -40,7 +40,6 @@ jobs:
         name: Setup python for changelog
         with:
           python-version: 3.9
-          cache: 'pip'
       - run: pip install auto-changelog
       - run: auto-changelog -t "Shardz - Master server"
       - name: Commit everything
